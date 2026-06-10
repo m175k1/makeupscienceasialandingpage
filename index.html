@@ -61,9 +61,10 @@
   .pulse{animation:pulse 2.2s infinite}
   @keyframes pulse{0%,100%{box-shadow:0 8px 22px rgba(65,19,32,.30)}50%{box-shadow:0 8px 34px rgba(65,19,32,.55)}}
 
-  /* ---------- Promo countdown bar ---------- */
+  /* ---------- Sticky top unit: promo bar + header stick together ---------- */
+  .top-stick{position:sticky;top:0;z-index:60}
   .promo-bar{
-    position:sticky;top:0;z-index:60;background:var(--maroon);color:var(--white);
+    background:var(--maroon);color:var(--white);
     padding:11px 16px;text-align:center;font-size:14px;font-weight:700;
   }
   .promo-bar b{font-weight:900}
@@ -76,11 +77,10 @@
   }
   /* ---------- Header: logo + ONE button. No nav. No links out. ---------- */
   header{
-    position:sticky;top:42px;z-index:50;
-    background:rgba(240,240,240,.92);backdrop-filter:blur(10px);
+    background:rgba(240,240,240,.94);backdrop-filter:blur(10px);
     border-bottom:1px solid rgba(0,48,55,.08);
   }
-  .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px}
   .logo{font-weight:900;font-size:18px;color:var(--teal);letter-spacing:-.01em}
   .logo span{color:var(--maroon)}
   .nav .btn{padding:12px 24px;font-size:14px}
@@ -311,14 +311,55 @@
   .toast span{font-size:12px;color:var(--ink-60)}
   @media(min-width:761px){.toast{bottom:24px}}
 
-  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)}
   .reveal.in{opacity:1;transform:none}
-  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}.pulse{animation:none}}
+
+  /* Hero entrance on load */
+  .hero .fade-in{opacity:0;transform:translateY(22px);animation:heroIn .8s cubic-bezier(.16,1,.3,1) forwards}
+  .hero .fade-in.d1{animation-delay:.05s}
+  .hero .fade-in.d2{animation-delay:.18s}
+  .hero .fade-in.d3{animation-delay:.31s}
+  .hero .fade-in.d4{animation-delay:.44s}
+  .hero .fade-in.d5{animation-delay:.57s}
+  @keyframes heroIn{to{opacity:1;transform:none}}
+  .hero-card.fade-in{animation-delay:.35s}
+
+  /* Slot meter fill animates when scrolled into view */
+  .slots-meter .fill{width:0;transition:width 1.4s cubic-bezier(.22,1,.36,1) .2s}
+  .slots-meter.in .fill{width:72%}
+
+  /* Play button pulse ring */
+  .play .pbtn{position:relative}
+  .play .pbtn::before{
+    content:"";position:absolute;inset:-6px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.55);animation:ring 2.4s ease-out infinite;
+  }
+  @keyframes ring{
+    0%{transform:scale(.9);opacity:.9}
+    70%{transform:scale(1.45);opacity:0}
+    100%{transform:scale(1.45);opacity:0}
+  }
+
+  /* Gentle float for the hero card tagline pill */
+  .hero-card::after{animation:floaty 4.5s ease-in-out infinite}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+  /* Stat numbers get a tabular feel while counting */
+  .stat b{font-variant-numeric:tabular-nums}
+
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+    .pulse,.play .pbtn::before,.hero-card::after{animation:none}
+    .hero .fade-in{opacity:1;transform:none;animation:none}
+    .slots-meter .fill{width:72%;transition:none}
+  }
 </style>
 </head>
 <body>
 
-<!-- ============ PROMO COUNTDOWN BAR ============ -->
+<!-- ============ STICKY TOP UNIT: promo bar + header move together ============ -->
+<div class="top-stick">
 <div class="promo-bar">
   ⚡ <b>June intake closes in</b>
   <span class="clock"><span data-c="h">00</span>:<span data-c="m">00</span>:<span data-c="s">00</span></span>
@@ -332,23 +373,26 @@
     <a class="btn btn-primary pulse" href="#claim">Claim My Slot</a>
   </div>
 </header>
+</div><!-- /.top-stick -->
 
 <!-- ============ HERO ============ -->
 <!-- Q: "Can someone like me, zero experience, really become a makeup artist?" -->
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">For aspiring makeup artists — no experience needed</span>
-      <h1>Go from <span class="accent">"I just watch tutorials"</span> to a working makeup artist — with a coach correcting your hand 1-on-1.</h1>
-      <p class="lead">YouTube shows you what someone else did on someone else's face. Makeup Science Asia teaches you <strong>why it works</strong> — undertones, color science, face structure — then coaches you 1-on-1 until your own hands can do it. Online or face-to-face. Your pace.</p>
+      <span class="eyebrow fade-in d1">For aspiring makeup artists — no experience needed</span>
+      <h1 class="fade-in d2">Go from <span class="accent">"I just watch tutorials"</span> to a working makeup artist — with a coach correcting your hand 1-on-1.</h1>
+      <p class="lead fade-in d3">YouTube shows you what someone else did on someone else's face. Makeup Science Asia teaches you <strong>why it works</strong> — undertones, color science, face structure — then coaches you 1-on-1 until your own hands can do it. Online or face-to-face. Your pace.</p>
+      <div class="fade-in d4">
       <a class="btn btn-primary pulse" href="#claim">Claim My Slot Before Intake Closes</a>
       <span class="btn-note">Free coach consultation first · No payment to reserve · <b class="slots-num">7</b> slots left</span>
-      <div class="hero-trust">
+      </div>
+      <div class="hero-trust fade-in d5">
         <div class="avatars"><i></i><i></i><i></i><i></i></div>
         <div><span class="stars">★★★★★</span> Trusted by <strong>6,000+ graduates</strong> since 2018</div>
       </div>
     </div>
-    <div class="hero-card">
+    <div class="hero-card fade-in">
       <h3>Is this for you?</h3>
       <ul class="check-list">
         <li><span class="tick">✓</span> You've never held a beauty blender professionally — that's fine. Most of our 6,000+ grads started at zero.</li>
@@ -364,10 +408,10 @@
 <!-- Q: "Is this school legit?" -->
 <section class="stats" style="padding:46px 0">
   <div class="wrap stats-grid">
-    <div class="stat reveal"><b>6,000+</b><em>graduates trained worldwide</em></div>
+    <div class="stat reveal"><b data-count="6000" data-suffix="+">0+</b><em>graduates trained worldwide</em></div>
     <div class="stat reveal"><b>1-on-1</b><em>personalized coaching, every student</em></div>
-    <div class="stat reveal"><b>0</b><em>experience needed to start</em></div>
-    <div class="stat reveal"><b>2018</b><em>teaching ever since — 8 years strong</em></div>
+    <div class="stat reveal"><b data-count="0">0</b><em>experience needed to start</em></div>
+    <div class="stat reveal"><b data-count="2018">0</b><em>teaching ever since — 8 years strong</em></div>
   </div>
 </section>
 
@@ -541,7 +585,7 @@
     <h2>Pick your path — then <span class="accent">claim your slot</span> below</h2>
     <p class="lead">Every course includes genuine 1-on-1 coaching, which is exactly why we cap intake every month. When the slots below are taken, enrollment closes until next month.</p>
 
-    <div class="slots-meter reveal">
+    <div class="slots-meter reveal" id="slots-meter">
       <div class="bar"><div class="fill"></div></div>
       <p>🔥 18 of 25 June slots taken — <span class="slots-num">7</span> remaining</p>
     </div>
@@ -753,10 +797,56 @@
   setTimeout(showToast, 6000);
   setInterval(showToast, 26000);
 
-  /* Scroll reveal */
+  /* ===== Scroll animations ===== */
+
+  /* Auto-add reveal to section headers + bonus list rows (no HTML editing needed) */
+  document.querySelectorAll('section .eyebrow, section h2, section .lead, .bonus-box li, .bonus-total, .guarantee, .video-points span, .claim-box').forEach(function(el){
+    el.classList.add('reveal');
+  });
+
+  /* Stagger: delay each .reveal by its index among reveal-siblings in the same parent */
+  document.querySelectorAll('.reveal').forEach(function(el){
+    var sibs = el.parentElement ? Array.prototype.filter.call(el.parentElement.children, function(c){ return c.classList && c.classList.contains('reveal'); }) : [el];
+    var idx = sibs.indexOf(el);
+    if(idx > 0) el.style.transitionDelay = Math.min(idx * 90, 450) + 'ms';
+  });
+
+  /* Count-up for stat numbers */
+  function countUp(el){
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1600, start = null;
+    function fmt(n){ return n.toLocaleString('en-US'); }
+    if(target === 0){ el.textContent = '0' + suffix; return; }
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3); /* ease-out cubic */
+      el.textContent = fmt(Math.round(target * eased)) + suffix;
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
-  }, {threshold:.12});
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add('in');
+      /* trigger count-ups inside this element */
+      var counters = e.target.matches('[data-count]') ? [e.target] : e.target.querySelectorAll('[data-count]');
+      counters.forEach(function(c){
+        if(c.dataset.done) return;
+        c.dataset.done = '1';
+        if(reduceMotion){
+          c.textContent = parseInt(c.getAttribute('data-count'),10).toLocaleString('en-US') + (c.getAttribute('data-suffix')||'');
+        } else {
+          countUp(c);
+        }
+      });
+      io.unobserve(e.target);
+    });
+  }, {threshold:.15});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 </script>
 </body>
